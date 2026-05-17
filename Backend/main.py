@@ -16,9 +16,12 @@ app = FastAPI(
 
 # ── CORS ──────────────────────────────────────────────────────────────────────
 # In production replace "*" with your frontend domain e.g. "https://ufindais.com"
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=[
+        "https://yourfrontend.vercel.app"
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
