@@ -1,0 +1,82 @@
+@import "tailwindcss";
+@plugin "daisyui" {
+  themes:
+    light --default,
+    dark;
+}
+
+@theme {
+  --color-primary: #6366f1;
+  --color-secondary: #a855f7;
+  --color-accent: #22d3ee;
+  --color-neutral: #191919;
+  --color-base-100: #ffffff;
+  --color-base-200: #f3f4f6;
+  --color-base-300: #e5e7eb;
+  --color-info: #3abff8;
+  --color-success: #36d399;
+  --color-warning: #fbbd23;
+  --color-error: #f87272;
+}
+
+/* Light theme (default) */
+:root,
+[data-theme="light"] {
+  --bg-primary: #ffffff;
+  --bg-secondary: #f3f4f6;
+  --bg-tertiary: #e5e7eb;
+  --bg-card: #ffffff;
+  --bg-dark: #ccd4e1;
+  --bg-darker: #ffffff;
+  --bg-darkest: #0f172a;
+  --text-primary: #1f2937;
+  --text-secondary: #424e5e;
+  --text-muted: #6b7280;
+  --text-light: #f3f4f6;
+  --text-inverse: #ffffff;
+  --border-color: #9b9fa5;
+  --border-dark: #374151;
+  --hover: #4885ff;
+}
+
+/* Dark theme */
+[data-theme="dark"] {
+  --bg-primary: #1f2937;
+  --bg-secondary: #111827;
+  --bg-tertiary: #0f172a;
+  --bg-card: #1f2937;
+  --bg-dark: #0f172a;
+  --bg-darker: #020617;
+  --bg-darkest: #000000;
+  --text-primary: #f3f4f6;
+  --text-secondary: #d1d5db;
+  --text-muted: #9ca3af;
+  --text-light: #1f2937;
+  --text-inverse: #1f2937;
+  --border-color: #3784ff;
+  --border-dark: #4b5563;
+  --hover: #4885ff;
+}
+
+body {
+  background-color: var(--bg-darker);
+  color: var(--text-primary);
+  margin: 0;
+  font-family:
+    system-ui,
+    -apple-system,
+    sans-serif;
+}
+
+/* Restore hover functionality for all interactive elements */
+a:hover,
+button:hover,
+[role="button"]:hover {
+  opacity: 0.9;
+  transition: all 0.2s ease-in-out;
+}
+
+/* Ensure Tailwind hover utilities work properly */
+* {
+  -webkit-tap-highlight-color: transparent;
+}
