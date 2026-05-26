@@ -31,12 +31,15 @@ const AIDetails = () => {
     setIsSaving(true);
 
     try {
-      const res = await fetch(`/api/users/me/saved/${tool.id}`, {
-        method: isSaved ? "DELETE" : "POST",
-        headers: {
-          Authorization: `Bearer ${token}`,
+      const res = await fetch(
+        `${import.meta.env.VITE_API_BASE_URL}/api/users/me/saved/${tool.id}`,
+        {
+          method: isSaved ? "DELETE" : "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         },
-      });
+      );
 
       if (!res.ok) {
         const data = await res.json().catch(() => ({}));
@@ -57,9 +60,10 @@ const AIDetails = () => {
       setLoading(true);
       setError(null);
       try {
+        const base = import.meta.env.VITE_API_BASE_URL;
         const [toolRes, altRes] = await Promise.all([
-          fetch(`/api/tools/${id}`),
-          fetch(`/api/tools/${id}/alternatives`),
+          fetch(`${base}/api/tools/${id}`),
+          fetch(`${base}/api/tools/${id}/alternatives`),
         ]);
 
         if (!toolRes.ok) {

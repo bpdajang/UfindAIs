@@ -22,13 +22,16 @@ const Login = () => {
       form.set("username", email);
       form.set("password", password);
 
-      const res = await fetch("/api/auth/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded",
+      const res = await fetch(
+        `${import.meta.env.VITE_API_BASE_URL}/api/auth/login`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+          },
+          body: form.toString(),
         },
-        body: form.toString(),
-      });
+      );
 
       if (!res.ok) {
         const data = await res.json().catch(() => ({}));
@@ -39,7 +42,7 @@ const Login = () => {
       const data = await res.json();
       // backend returns { access_token, token_type, user }
       login({ user: data.user, access_token: data.access_token });
-      navigate("/dashboard");
+      navigate("/");
     } catch {
       setError("Network error. Please try again.");
     } finally {

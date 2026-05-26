@@ -24,17 +24,20 @@ const Register = () => {
 
     setLoading(true);
     try {
-      const res = await fetch("/api/auth/register", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
+      const res = await fetch(
+        `${import.meta.env.VITE_API_BASE_URL}/api/auth/register`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            name: formData.name,
+            email: formData.email,
+            password: formData.password,
+          }),
         },
-        body: JSON.stringify({
-          name: formData.name,
-          email: formData.email,
-          password: formData.password,
-        }),
-      });
+      );
 
       if (!res.ok) {
         const data = await res.json().catch(() => ({}));
@@ -45,6 +48,7 @@ const Register = () => {
       navigate("/login");
     } catch (e) {
       setError("Network error. Please try again.");
+      console.error("Registration error:", e);
     } finally {
       setLoading(false);
     }
