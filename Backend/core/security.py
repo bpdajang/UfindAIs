@@ -1,19 +1,12 @@
+import bcrypt
 from datetime import datetime, timedelta, timezone
 from typing import Optional
 from jose import jwt
 
-from passlib.context import CryptContext
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 
 from core.config import settings
-
-pwd_context = CryptContext(
-    schemes=["bcrypt"],
-    deprecated="auto",
-    # Avoid triggering broken bcrypt backend during context init.
-    # We'll still fallback in hash_password() if needed.
-)
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/auth/login")
 
@@ -21,26 +14,13 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/auth/login")
 # ── Passwords ─────────────────────────────────────────────────────────────────
 
 def hash_password(password: str) -> str:
-    # Passlib bcrypt backend can error with some bcrypt module builds.
-    # Fallback: encode to bytes and use Passlib's pure-python builtin backend.
-    try:
-        # bcrypt limit: max 72 bytes
-        password_bytes = password.encode("utf-8")
-        if len(password_bytes) > 72:
-            password = password_bytes[:72].decode("utf-8", errors="ignore")
-        return pwd_context.hash(password)
-    except Exception:
-        import os
-
-        os.environ["PASSLIB_BUILTIN_BCRYPT"] = "1"
-        # Retry with builtin backend enabled.
-        return pwd_context.hash(password)
-
-
+    password_bytes = password.encode("utf-8")[:72]  # bcrypt hard limit
+    return bcrypt.hashpw(password_bytes, bcrypt.gensalt()).decode("utf-8")
 
 
 def verify_password(plain: str, hashed: str) -> bool:
-    return pwd_context.verify(plain, hashed)
+    plain_bytes = plain.encode("utf-8")[:72]
+    return bcrypt.checkpw(plain_bytes, hashed.encode("utf-8"))
 
 
 # ── JWT ───────────────────────────────────────────────────────────────────────
@@ -69,10 +49,10 @@ def _decode_token(token: str) -> dict:
 
 async def get_current_user(token: str = Depends(oauth2_scheme)):
     """Returns the authenticated user (any role)."""
-    from db.database import get_db          # ✅ fixed import path
+    from db.database import get_db
     from bson import ObjectId
 
-    db = get_db()                           # ✅ use get_db() not raw db
+    db = get_db()
 
     payload = _decode_token(token)
     user_id: str = payload.get("sub")
@@ -91,3 +71,4 @@ async def get_current_admin(token: str = Depends(oauth2_scheme)):
     if user.get("role") != "admin":
         raise HTTPException(status_code=403, detail="Admin access required")
     return user
+
