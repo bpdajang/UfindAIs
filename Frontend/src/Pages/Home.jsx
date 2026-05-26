@@ -16,7 +16,9 @@ const Home = () => {
       // Fetch enough tools so featured=true items aren't missed due to API default limit
       params.set("limit", "100");
 
-      const res = await fetch(`/api/tools?${params}`);
+      const res = await fetch(
+        `${import.meta.env.VITE_API_BASE_URL}/api/tools?${params}`,
+      );
       if (!res.ok) throw new Error(`Server error ${res.status}`);
       const data = await res.json();
 
@@ -88,7 +90,7 @@ const Home = () => {
 
         <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
           {tools.map((tool) => (
-            <AICard key={tool} tool={tool} />
+            <AICard key={tool.id} tool={tool} />
           ))}
         </div>
       </section>

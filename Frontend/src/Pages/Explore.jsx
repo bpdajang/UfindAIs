@@ -30,10 +30,18 @@ const Explore = () => {
 
   // Fetch dynamic categories from API (falls back to static list)
   useEffect(() => {
-    fetch("/api/tools/categories")
-      .then((r) => r.json())
-      .then((data) => setCategories(["All", ...data]))
-      .catch(() => setCategories(STATIC_CATEGORIES));
+    const fetchData = async () => {
+      try {
+        const res = await fetch(
+          `${import.meta.env.VITE_API_BASE_URL}/api/tools/categories`,
+        );
+        const data = await res.json();
+        setCategories(["All", ...data]);
+      } catch (error) {
+        setCategories(STATIC_CATEGORIES);
+      }
+    };
+    fetchData();
   }, []);
 
   const fetchTools = useCallback(async () => {
@@ -45,7 +53,9 @@ const Explore = () => {
       if (selected !== "All") params.set("category", selected);
       params.set("limit", "50");
 
-      const res = await fetch(`/api/tools?${params}`);
+      const res = await fetch(
+        `${import.meta.env.VITE_API_BASE_URL}/api/tools?${params}`,
+      );
       if (!res.ok) throw new Error(`Server error ${res.status}`);
       const data = await res.json();
       setTools(data);
