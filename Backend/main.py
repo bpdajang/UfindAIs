@@ -16,8 +16,8 @@ app = FastAPI(
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
-        "https://ufindais.vercel.app",
-        "http://localhost:5173"
+        "https://ufindais.com",
+        "https://www.ufindais.com"
     ],
     allow_credentials=True,
     allow_methods=["*"],
